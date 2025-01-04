@@ -1,37 +1,44 @@
-import fonts from "./fonts.json"
+/**
+ * The codepoints file looks like this (it is not json formatted):
+ * 10k e951
+ * 10mp e952
+ * 11mp e953
+ * 123 eb8d
+ * 12mp e954
+ * 13mp e955
+ * 14mp e956
+ * 15mp e957
+ * 16mp e958
+ * account_circle_filled f20b
+ * account_circle_off f7b3
+ * account_tree e97a
+ * action_key f502
+ *
+ * Read the codepoints file and generate a map that looks like this: (convert from hex to decimal)
+ * {
+ *     "10k": 59729,
+ * }
+ *
+ */
 
-console.log('total' , fonts.icons.length)
+import fs from 'fs'
+import path from 'path'
 
-const uniqueFonts = Array.from(new Set(fonts.icons.map(icon => icon.name)));
-
-console.log('unique', uniqueFonts.length)
-
-// create a map of fonts that contains only the latest version of every font name
-
-const latestFontMap = fonts.icons.reduce((acc, font) => {
-  if (!acc[font.name]) {
-    acc[font.name] = font
-  } else {
-    if (acc[font.name].version < font.version) {
-      acc[font.name] = font
+const codepointsFile = path.join(__dirname, 'MaterialSymbolsOutlined.codepoints')
+const codepoints = fs.readFileSync(codepointsFile, 'utf-8')
+const codepointsArray = codepoints.split('\n')
+const codepointsMap = codepointsArray.reduce((acc, line) => {
+    const [key, value] = line.split(' ')
+    if (key && value) {
+        acc[key] = parseInt(value, 16)
     }
-  }
-  return acc
+    return acc
 }, {})
 
-console.log('latestFontMap', Object.keys(latestFontMap).length)
+console.log('Got', Object.keys(codepointsMap).length, 'codepoints')
 
-// from the latest font map, create an object that looks like Record<string,number> where string is the name and number is the code point
+// Write the codepoints map to a file
+const codepointsMapFile = path.join(__dirname, 'map.json')
 
-const fontCodePoints = Object.entries<(typeof fonts)['icons'][number]>(latestFontMap).reduce((acc, [name, font]) => {
-  acc[name] = font.codepoint
-  return acc
-}, {})
-
-console.log('fontCodePoints', Object.keys(fontCodePoints).length)
-
-// write fontCodePoints to disk
-
-import fs from 'node:fs'
-
-fs.writeFileSync('fontCodePoints.json', JSON.stringify(fontCodePoints, null, 2))
+fs.writeFileSync(codepointsMapFile, JSON.stringify(codepointsMap, null, 2))
+console.log('Wrote codepoints map to', codepointsMapFile)

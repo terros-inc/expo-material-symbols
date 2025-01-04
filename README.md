@@ -6,13 +6,13 @@ Use it in your Expo project as described [in the documentation](https://docs.exp
 
 ```js
 import glyphMap from './map.json'
-const MaterialSymbols = createIconSet(glyphMap, 'Material Icons', 'MaterialIcons-Regular.ttf')
+const MaterialSymbols = createIconSet(glyphMap, 'Material Symbols Outlined', require('./MaterialSymbols-Outlined.ttf'))
 ```
 
 Note that the actual PostScript font name is "Material Icons"
 
-The latest `fonts.json` can be obtained from Google Fonts
+The latest `MaterialSymbolsOutlined.codepoints` can be obtained from Google's repo
 
 ```
-https://fonts.google.com/metadata/icons?key=material_symbols&incomplete=true
+https://github.com/google/material-design-icons/tree/master/variablefont
 ```
